@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Ireland 🍀 July 2026</title>
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #d8f3dc;
+      --gold: #b7960c;
+      --gold-light: #f9e784;
+      --gray: #6b7280;
+      --bg: #f8faf8;
+      --card: #ffffff;
+      --text: #1a2e1a;
+      --border: #e0ede2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .hero {
+      background: linear-gradient(160deg, var(--green) 0%, var(--green-light) 100%);
+      color: white;
+      padding: 48px 20px 32px;
+      text-align: center;
+    }
+    .hero .flag { font-size: 48px; margin-bottom: 8px; }
+    .hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .hero .subtitle { font-size: 15px; opacity: 0.85; margin-top: 6px; }
+    .hero .dates {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex: none;
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+    }
+
+    /* CONTENT */
+    .content { padding: 16px; max-width: 480px; margin: 0 auto; }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-header .icon {
+      font-size: 22px;
+      width: 36px;
+      text-align: center;
+    }
+    .card-header .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--green);
+    }
+    .card-header .title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .card-body { padding: 14px 16px; }
+
+    /* INFO ROWS */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .key { color: var(--gray); font-size: 13px; flex-shrink: 0; margin-right: 12px; }
+    .info-row .val { font-weight: 600; text-align: right; }
+    .info-row .val.confirm { color: var(--green); font-family: monospace; font-size: 13px; }
+    .info-row .val.pending { color: #9ca3af; font-style: italic; font-weight: 400; }
+
+    /* DAY TIMELINE */
+    .day-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .day-header {
+      background: var(--green-pale);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .day-header .day-num {
+      background: var(--green);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .day-header .day-info .date { font-size: 15px; font-weight: 700; }
+    .day-header .day-info .location { font-size: 12px; color: var(--green); font-weight: 600; }
+    .timeline { padding: 4px 0; }
+    .timeline-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-item .time {
+      font-size: 12px;
+      color: var(--gray);
+      width: 52px;
+      flex-shrink: 0;
+      padding-top: 2px;
+      font-weight: 600;
+    }
+    .timeline-item .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-light);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .timeline-item .detail .name { font-size: 14px; font-weight: 600; }
+    .timeline-item .detail .sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+    /* MAP BUTTON */
+    .map-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-pale);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+    .map-btn:active { opacity: 0.7; }
+
+    /* TIPS */
+    .tip-card {
+      background: var(--gold-light);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .tip-card strong { color: var(--gold); }
+
+    /* QUICK LINKS */
+    .quick-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .quick-link {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .quick-link .ql-icon { font-size: 24px; }
+    .quick-link:active { background: var(--green-pale); }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 24px 16px;
+      font-size: 11px;
+      color: var(--gray);
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="flag">🍀</div>
+  <h1>Ireland · July 2026</h1>
+  <div class="subtitle">Mark & Krista · County Clare</div>
+  <div class="dates">July 5 – 10, 2026</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('itinerary', this)">Itinerary</div>
+  <div class="tab" onclick="showTab('flights', this)">Flights</div>
+  <div class="tab" onclick="showTab('hotel', this)">Hotel</div>
+  <div class="tab" onclick="showTab('golf', this)">Golf</div>
+  <div class="tab" onclick="showTab('tips', this)">Tips</div>
+</div>
+
+<div class="content">
+
+  <!-- ITINERARY -->
+  <div class="section active" id="itinerary">
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-num">1</div>
+        <div class="day-info">
+          <div class="date">Sunday, July 5</div>
+          <div class="location">Pittsburgh → Dublin</div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">8:10 PM</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">✈️ Depart Pittsburgh (PIT)</div>
+            <div class="sub">Aer Lingus EI 80 · Nonstop to Dublin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-num">2</div>
+        <div class="day-info">
+          <div class="date">Monday, July 6</div>
+          <div class="location">Dublin → Lahinch</div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">~7 AM</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🛬 Arrive Dublin Airport</div>
+            <div class="sub">Customs · Pick up rental car</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">~10 AM</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🚗 Drive to Lahinch</div>
+            <div class="sub">~3 hrs via M7/M18 · County Clare</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">~1 PM</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🏨 Check in · Lahinch Coast Hotel</div>
+            <div class="sub">Lahinch, Co. Clare</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">Afternoon</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🌊 Explore Lahinch</div>
+            <div class="sub">Town, beach, recover from overnight flight</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-num">3</div>
+        <div class="day-info">
+          <div class="date">Tuesday, July 7</div>
+          <div class="location">Lahinch</div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">Morning</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">⛳ Golf · Lahinch Golf Club</div>
+            <div class="sub">Old Course · Tee time TBD</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">Afternoon</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🏖️ Lahinch Beach</div>
+            <div class="sub">Surf town vibes · relax</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">Evening</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🍺 Dinner in Lahinch</div>
+            <div class="sub">Details TBD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-num">4</div>
+        <div class="day-info">
+          <div class="date">Wednesday, July 8</div>
+          <div class="location">Cliffs of Moher · Burren</div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">Morning</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🏔️ Cliffs of Moher</div>
+            <div class="sub">~20 min drive · Arrive early to beat crowds</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">Afternoon</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🪨 The Burren</div>
+            <div class="sub">Unique limestone landscape · Poulnabrone Dolmen</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">Evening</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🎶 Traditional Music</div>
+            <div class="sub">Doolin or Lahinch pub session</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-num">5</div>
+        <div class="day-info">
+          <div class="date">Thursday, July 9</div>
+          <div class="location">Lahinch</div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">Morning</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">⛳ Golf Day 2</div>
+            <div class="sub">Lahinch or nearby course · TBD</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">Afternoon</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🛍️ Explore + Pack</div>
+            <div class="sub">Last afternoon in Clare</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">Evening</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🍽️ Farewell Dinner</div>
+            <div class="sub">Details TBD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-num">6</div>
+        <div class="day-info">
+          <div class="date">Friday, July 10</div>
+          <div class="location">Lahinch → Dublin → Home</div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">Morning</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">🏨 Check out · Drive to Dublin</div>
+            <div class="sub">~3 hrs · Allow time for fuel + return car</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">TBD</div>
+          <div class="dot"></div>
+          <div class="detail">
+            <div class="name">✈️ Return Flight</div>
+            <div class="sub">Details TBD — add your return flight</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FLIGHTS -->
+  <div class="section" id="flights">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">✈️</div>
+        <div>
+          <div class="label">Outbound</div>
+          <div class="title">PIT → DUB</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-row"><span class="key">Flight</span><span class="val">Aer Lingus EI 80</span></div>
+        <div class="info-row"><span class="key">Departs</span><span class="val">Sun Jul 5 · 8:10 PM</span></div>
+        <div class="info-row"><span class="key">Arrives</span><span class="val">Mon Jul 6 · ~7:00 AM</span></div>
+        <div class="info-row"><span class="key">From</span><span class="val">Pittsburgh (PIT)</span></div>
+        <div class="info-row"><span class="key">To</span><span class="val">Dublin (DUB)</span></div>
+        <div class="info-row"><span class="key">Confirmation</span><span class="val pending">Add confirmation #</span></div>
+        <div class="info-row"><span class="key">Seats</span><span class="val pending">Add seat numbers</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">✈️</div>
+        <div>
+          <div class="label">Return</div>
+          <div class="title">DUB → PIT</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-row"><span class="key">Flight</span><span class="val pending">TBD — add flight</span></div>
+        <div class="info-row"><span class="key">Departs</span><span class="val pending">Thu Jul 10</span></div>
+        <div class="info-row"><span class="key">Confirmation</span><span class="val pending">Add confirmation #</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">🚗</div>
+        <div>
+          <div class="label">Ground</div>
+          <div class="title">Rental Car</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-row"><span class="key">Company</span><span class="val pending">TBD</span></div>
+        <div class="info-row"><span class="key">Pick up</span><span class="val pending">Dublin Airport · Jul 6</span></div>
+        <div class="info-row"><span class="key">Drop off</span><span class="val pending">Dublin Airport · Jul 10</span></div>
+        <div class="info-row"><span class="key">Confirmation</span><span class="val pending">Add confirmation #</span></div>
+        <div class="info-row"><span class="key">⚠️ Note</span><span class="val" style="color:#b45309;font-size:12px">Drive on the LEFT</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOTEL -->
+  <div class="section" id="hotel">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">🏨</div>
+        <div>
+          <div class="label">Hotel</div>
+          <div class="title">Lahinch Coast Hotel</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-row"><span class="key">Check in</span><span class="val">Mon Jul 6</span></div>
+        <div class="info-row"><span class="key">Check out</span><span class="val">Thu Jul 10</span></div>
+        <div class="info-row"><span class="key">Nights</span><span class="val">4 nights</span></div>
+        <div class="info-row"><span class="key">Location</span><span class="val">Lahinch, Co. Clare</span></div>
+        <div class="info-row"><span class="key">Confirmation</span><span class="val pending">Add confirmation #</span></div>
+        <div class="info-row"><span class="key">Phone</span><span class="val"><a href="tel:+35365708100" style="color:var(--green)">+353 65 708 1100</a></span></div>
+      </div>
+    </div>
+    <a class="map-btn" href="https://maps.google.com/?q=Lahinch+Coast+Hotel,+Lahinch,+County+Clare,+Ireland" target="_blank">
+      📍 Open in Maps
+    </a>
+
+    <div class="tip-card" style="margin-top:12px">
+      <strong>💡 Check-in tip:</strong> You'll arrive early after the overnight flight (~1 PM). Call ahead — the hotel may be able to accommodate early check-in or at least hold your bags so you can explore.
+    </div>
+  </div>
+
+  <!-- GOLF -->
+  <div class="section" id="golf">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">⛳</div>
+        <div>
+          <div class="label">Course 1</div>
+          <div class="title">Lahinch Golf Club</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-row"><span class="key">Date</span><span class="val pending">TBD — add tee time</span></div>
+        <div class="info-row"><span class="key">Course</span><span class="val">Old Course (Championship)</span></div>
+        <div class="info-row"><span class="key">Par</span><span class="val">72 · 6,950 yards</span></div>
+        <div class="info-row"><span class="key">Rank</span><span class="val">Top 5 in Ireland</span></div>
+        <div class="info-row"><span class="key">Confirmation</span><span class="val pending">Add tee time ref</span></div>
+        <div class="info-row"><span class="key">Phone</span><span class="val"><a href="tel:+35365708003" style="color:var(--green)">+353 65 708 1003</a></span></div>
+      </div>
+    </div>
+    <a class="map-btn" href="https://maps.google.com/?q=Lahinch+Golf+Club,+Lahinch,+County+Clare" target="_blank">📍 Directions to Lahinch GC</a>
+
+    <div style="margin-top:16px;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px">Nearby Courses</div>
+    <div class="card">
+      <div class="card-body">
+        <div class="info-row"><span class="key">Doonbeg</span><span class="val" style="font-size:13px">~30 min · Trump course · links</span></div>
+        <div class="info-row"><span class="key">Dooks</span><span class="val" style="font-size:13px">~45 min · Kerry links · scenic</span></div>
+        <div class="info-row"><span class="key">Ballybunion</span><span class="val" style="font-size:13px">~1 hr · World top 20</span></div>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <strong>⛳ Golf tip:</strong> Lahinch Old Course tee times sell out months ahead. Confirm your booking ASAP. Caddies available — highly recommended for first-timers on the course.
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="section" id="tips">
+
+    <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px">Quick Links</div>
+    <div class="quick-links">
+      <a class="quick-link" href="https://maps.google.com/?q=Lahinch,+County+Clare,+Ireland" target="_blank">
+        <span class="ql-icon">🗺️</span>Lahinch Map
+      </a>
+      <a class="quick-link" href="https://maps.google.com/?q=Cliffs+of+Moher,+County+Clare,+Ireland" target="_blank">
+        <span class="ql-icon">🏔️</span>Cliffs of Moher
+      </a>
+      <a class="quick-link" href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=EUR" target="_blank">
+        <span class="ql-icon">💶</span>USD → EUR
+      </a>
+      <a class="quick-link" href="https://www.met.ie" target="_blank">
+        <span class="ql-icon">🌦️</span>Irish Weather
+      </a>
+    </div>
+
+    <div class="tip-card">
+      <strong>💶 Money:</strong> Ireland uses Euro (€). Credit cards accepted everywhere. Tap to pay works at most places. Carry €50–100 cash for pubs and small spots.
+    </div>
+
+    <div class="tip-card">
+      <strong>🚗 Driving:</strong> Drive on the LEFT. Country roads are narrow — take it slow. Google Maps works great. Roundabouts yield to traffic already in the circle.
+    </div>
+
+    <div class="tip-card">
+      <strong>📱 Phones:</strong> US phones work on international plans. T-Mobile has free Ireland data. AT&T/Verizon charge ~$10/day. Download offline Google Maps for County Clare before you go.
+    </div>
+
+    <div class="tip-card">
+      <strong>🌦️ Weather:</strong> July is mild — 60–68°F. Pack a light rain jacket. You WILL need it at least once. Sunshine and showers often happen the same hour.
+    </div>
+
+    <div class="tip-card">
+      <strong>🍺 Pubs:</strong> McDermott's, O'Looney's, and The Nineteenth are the classic Lahinch pubs. Ask for a pint of Guinness and give it the full 2-minute pour. Traditional music sessions happen spontaneously — usually Fri/Sat nights.
+    </div>
+
+    <div class="tip-card">
+      <strong>⏰ Time:</strong> Ireland is 5 hours ahead of Eastern. Sunrise is around 5:15 AM in July — it stays light until 10 PM. Don't fight jet lag — just go with it.
+    </div>
+
+    <div class="tip-card">
+      <strong>🏔️ Cliffs of Moher:</strong> Go early (before 10 AM) or late (after 4 PM) to beat tour buses. €8/person entry. The cliff walk toward O'Brien's Tower is the best view.
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  Mark & Krista · Ireland 2026 🍀<br>
+  Built with ⚡ by Jake
+</div>
+
+<script>
+  function showTab(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+</script>
+
+</body>
+</html>
