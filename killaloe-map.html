@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Killaloe — Sights & Walk</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #d8f3dc;
+      --gold: #92710a;
+      --gold-bg: #fef9e7;
+      --gold-border: #f0d060;
+      --gray: #6b7280;
+      --bg: #f8faf8;
+      --card: #ffffff;
+      --text: #1a2e1a;
+      --border: #e0ede2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+
+    .hero {
+      background: linear-gradient(160deg, var(--green) 0%, var(--green-light) 100%);
+      color: white; padding: 28px 20px 18px; text-align: center;
+    }
+    .hero h1 { font-size: 20px; font-weight: 700; }
+    .hero p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+    #map { width: 100%; height: 320px; z-index: 1; }
+
+    .walk-bar { background: var(--gold-bg); border-bottom: 1px solid var(--gold-border); padding: 10px 14px; font-size: 12px; color: var(--gold); font-weight: 600; }
+
+    .legend { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px; background: white; border-bottom: 1px solid var(--border); }
+    .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+    .badge.lunch  { background: #dcfce7; color: #166534; }
+    .badge.hist   { background: #dbeafe; color: #1e40af; }
+    .badge.nature { background: #fce7f3; color: #9d174d; }
+
+    .list { padding: 10px 14px 80px; }
+    .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--gray); margin: 14px 0 6px; }
+
+    .place-card {
+      background: white; border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 13px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;
+    }
+    .place-card.highlight { border-color: var(--green); background: var(--green-pale); }
+    .pin { font-size: 22px; flex-shrink: 0; }
+    .place-info .name { font-size: 14px; font-weight: 700; }
+    .place-info .meta { font-size: 11px; color: var(--gray); margin-top: 2px; line-height: 1.5; }
+    .place-info .walk { font-size: 11px; font-weight: 600; color: var(--green); margin-top: 3px; }
+    .place-info .note { font-size: 11px; background: var(--gold-bg); color: var(--gold); border-radius: 6px; padding: 3px 7px; display: inline-block; margin-top: 4px; }
+    .map-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--green); font-weight: 600; text-decoration: none; margin-top: 5px; }
+
+    .step { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+    .step:last-child { border-bottom: none; }
+    .step-num { background: var(--green); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .step-text { font-size: 13px; line-height: 1.5; }
+    .step-text strong { font-weight: 700; }
+    .step-text span { font-size: 11px; color: var(--gray); display: block; margin-top: 2px; }
+
+    .nav-bar { display: flex; background: white; border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+    .nav-btn { flex: 1; padding: 12px 6px; text-align: center; font-size: 10px; font-weight: 600; color: var(--gray); text-decoration: none; }
+    .nav-btn span { display: block; font-size: 18px; margin-bottom: 2px; }
+    .nav-btn.active { color: var(--green); }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🏰 Killaloe — Sights & Walk</h1>
+  <p>Monday July 6 · Afternoon · Co. Clare</p>
+</div>
+
+<div id="map"></div>
+
+<div class="walk-bar">🚶 Self-guided walk · ~1.5 km · ~1.5 hrs · Flat & easy · All sites within minutes of each other</div>
+
+<div class="legend">
+  <span class="badge hist">🏛️ Historic</span>
+  <span class="badge lunch">🍽️ Lunch</span>
+  <span class="badge nature">🌊 Scenic</span>
+</div>
+
+<div class="list">
+
+  <div class="section-label">🗺️ Suggested Walk Order</div>
+  <div class="place-card" style="flex-direction:column;gap:0">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Flanagan's on the Lake</strong> — Lunch<span>Ballina Waterfront · Lough Derg · ~12:30 PM arrival from Dublin</span></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>St. Flannan's Cathedral</strong> — 13th century<span>Cathedral St · 5 min walk from Flanagan's · Free entry</span></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><strong>St. Lua's Oratory</strong> — Early Christian<span>Cathedral grounds · Ireland's oldest intact church · 2 min from cathedral</span></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text"><strong>Killaloe Bridge</strong> — 13 arches, River Shannon<span>Connects Killaloe (Clare) to Ballina (Tipperary) · Great photo spot</span></div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-text"><strong>Brian Boru's Fort (Béal Boru)</strong> — Iron Age ringfort<span>~10 min walk north along river · Site of High King's palace · Lough Derg views</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">🍽️ Lunch</div>
+  <div class="place-card highlight">
+    <div class="pin">🍽️</div>
+    <div class="place-info">
+      <div class="name">Flanagan's on the Lake</div>
+      <div class="meta">Ballina Waterfront · Lough Derg · Gastropub · Seafood & Irish classics · Great views</div>
+      <div class="walk">📍 Arrival lunch ~12:30 PM · Book ahead</div>
+      <a class="map-link" href="https://maps.google.com/?q=Flanagan's+on+the+Lake+Ballina+Killaloe" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="section-label">🏛️ Historic Sites</div>
+
+  <div class="place-card">
+    <div class="pin">⛪</div>
+    <div class="place-info">
+      <div class="name">St. Flannan's Cathedral</div>
+      <div class="meta">Cathedral St, Killaloe · 13th century · 1,000 years of continuous worship · Runic inscriptions · Free entry</div>
+      <div class="walk">🚶 ~5 min walk from Flanagan's</div>
+      <a class="map-link" href="https://maps.google.com/?q=St+Flannan's+Cathedral+Killaloe" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🪨</div>
+    <div class="place-info">
+      <div class="name">St. Lua's Oratory</div>
+      <div class="meta">Cathedral grounds · One of Ireland's oldest intact churches · Moved stone-by-stone from Inis Lua island when the Shannon was dammed · Remarkable survival</div>
+      <div class="walk">🚶 In the cathedral grounds</div>
+      <a class="map-link" href="https://maps.google.com/?q=St+Lua+Oratory+Killaloe" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🏰</div>
+    <div class="place-info">
+      <div class="name">Brian Boru's Fort (Béal Boru)</div>
+      <div class="meta">North of Killaloe · Iron Age ringfort · Home of Brian Boru, High King of Ireland · Overlooks Lough Derg · GPS: 52.8069°N, 8.4444°W</div>
+      <div class="walk">🚶 ~10 min walk north along the river</div>
+      <div class="note">Brian Boru defeated the Vikings at Battle of Clontarf 1014 AD</div>
+      <a class="map-link" href="https://maps.google.com/?q=52.8069,-8.4444" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="section-label">🌊 Scenic</div>
+
+  <div class="place-card">
+    <div class="pin">🌉</div>
+    <div class="place-info">
+      <div class="name">Killaloe Bridge</div>
+      <div class="meta">13-arch stone bridge · Spans the River Shannon · Connects Killaloe (Clare) to Ballina (Tipperary) · Great photo spot</div>
+      <div class="walk">🚶 ~3 min walk from cathedral</div>
+      <a class="map-link" href="https://maps.google.com/?q=Killaloe+Bridge+River+Shannon" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🌊</div>
+    <div class="place-info">
+      <div class="name">Lough Derg Waterfront</div>
+      <div class="meta">Ireland's third largest lake · Beautiful walk along the shore · Marina, boats, swans</div>
+      <div class="walk">🚶 Along the main street</div>
+      <a class="map-link" href="https://maps.google.com/?q=Lough+Derg+Killaloe" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <a class="nav-btn" href="/"><span>🍀</span>Itinerary</a>
+  <a class="nav-btn active" href="/killaloe-map.html"><span>🏰</span>Killaloe</a>
+  <a class="nav-btn" href="/lahinch-map.html"><span>🌊</span>Lahinch</a>
+  <a class="nav-btn" href="/dublin-map.html"><span>🏛️</span>Dublin</a>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([52.8069, -8.4444], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  function makeIcon(emoji, color) {
+    return L.divIcon({
+      className: '',
+      html: `<div style="background:${color};color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.3);border:2px solid white">${emoji}</div>`,
+      iconSize: [30, 30], iconAnchor: [15, 15],
+    });
+  }
+
+  const places = [
+    { name: "Flanagan's on the Lake", emoji: '🍽️', color: '#166534', lat: 52.8055, lng: -8.4420, note: 'Lunch ~12:30 PM · Ballina Waterfront · Lough Derg' },
+    { name: "St. Flannan's Cathedral", emoji: '⛪', color: '#1e40af', lat: 52.8073, lng: -8.4432, note: '13th century · Free entry · Runic inscriptions' },
+    { name: "St. Lua's Oratory", emoji: '🪨', color: '#1e40af', lat: 52.8071, lng: -8.4430, note: "One of Ireland's oldest intact churches · Cathedral grounds" },
+    { name: "Brian Boru's Fort", emoji: '🏰', color: '#7c3aed', lat: 52.8069, lng: -8.4444, note: 'Iron Age ringfort · High King of Ireland · Lough Derg views' },
+    { name: "Killaloe Bridge", emoji: '🌉', color: '#9d174d', lat: 52.8065, lng: -8.4415, note: '13-arch stone bridge · River Shannon · Great photo spot' },
+    { name: "Lough Derg Waterfront", emoji: '🌊', color: '#0e7490', lat: 52.8060, lng: -8.4390, note: "Ireland's third largest lake · Marina walk" },
+  ];
+
+  places.forEach((p, i) => {
+    L.marker([p.lat, p.lng], { icon: makeIcon(p.emoji, p.color) })
+      .addTo(map)
+      .bindPopup(`<strong>${p.name}</strong><br><span style="font-size:12px;color:#555">${p.note}</span>`);
+  });
+</script>
+</body>
+</html>
