@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lahinch — Food & Drink Map</title>
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #d8f3dc;
+      --gold: #92710a;
+      --gold-bg: #fef9e7;
+      --gray: #6b7280;
+      --bg: #f8faf8;
+      --card: #ffffff;
+      --text: #1a2e1a;
+      --border: #e0ede2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+
+    .hero {
+      background: linear-gradient(160deg, var(--green) 0%, var(--green-light) 100%);
+      color: white; padding: 28px 20px 18px; text-align: center;
+    }
+    .hero h1 { font-size: 20px; font-weight: 700; }
+    .hero p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+    #map { width: 100%; height: 340px; border: none; }
+
+    .legend { padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 8px; background: white; border-bottom: 1px solid var(--border); }
+    .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+    .badge.hotel  { background: #dbeafe; color: #1e40af; }
+    .badge.lunch  { background: #dcfce7; color: #166534; }
+    .badge.dinner { background: #fce7f3; color: #9d174d; }
+    .badge.pub    { background: #fef9c3; color: #713f12; }
+    .badge.cafe   { background: #f3e8ff; color: #6b21a8; }
+
+    .list { padding: 10px 14px 80px; }
+    .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--gray); margin: 14px 0 6px; }
+
+    .place-card {
+      background: white; border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 13px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px;
+      cursor: pointer; transition: box-shadow 0.15s;
+    }
+    .place-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    .place-card.highlight { border-color: var(--green); background: var(--green-pale); }
+    .pin { font-size: 22px; flex-shrink: 0; }
+    .place-info .name { font-size: 14px; font-weight: 700; }
+    .place-info .meta { font-size: 11px; color: var(--gray); margin-top: 2px; line-height: 1.5; }
+    .place-info .walk { font-size: 11px; font-weight: 600; color: var(--green); margin-top: 3px; }
+    .place-info .note { font-size: 11px; background: var(--gold-bg); color: var(--gold); border-radius: 6px; padding: 3px 7px; display: inline-block; margin-top: 4px; }
+
+    .map-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--green); font-weight: 600; text-decoration: none; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🍽️ Lahinch — Food & Drink</h1>
+  <p>Walking distance from Lahinch Coast Hotel</p>
+</div>
+
+<!-- Embedded Google Map centered on Lahinch Coast Hotel -->
+<iframe id="map"
+  src="https://www.google.com/maps/embed/v1/search?key=AIzaSyB5UR8FOs_5ZBdu3mA1c-N8SDv9N6Usops&q=restaurants+pubs+Lahinch+Clare+Ireland&center=52.9329,-9.3467&zoom=15"
+  allowfullscreen loading="lazy">
+</iframe>
+
+<div class="legend">
+  <span class="badge hotel">🏨 Hotel</span>
+  <span class="badge lunch">🍽️ Lunch</span>
+  <span class="badge dinner">🌙 Dinner</span>
+  <span class="badge pub">🍺 Pub</span>
+  <span class="badge cafe">☕ Café</span>
+</div>
+
+<div class="list">
+
+  <div class="section-label">🏨 Your Base</div>
+
+  <div class="place-card highlight">
+    <div class="pin">🏨</div>
+    <div class="place-info">
+      <div class="name">Lahinch Coast Hotel</div>
+      <div class="meta">Station Road · Your home base</div>
+      <div class="walk">📍 Start here</div>
+      <div class="note">Aberdeen Bar on-site for casual meals</div>
+      <a class="map-link" href="https://maps.google.com/?q=Lahinch+Coast+Hotel+Station+Road+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="section-label">🍽️ Lunch (Day 3 — Tuesday)</div>
+
+  <div class="place-card highlight">
+    <div class="pin">🦞</div>
+    <div class="place-info">
+      <div class="name">Vaughan's on the Prom ⭐ Recommended</div>
+      <div class="meta">The Promenade · Seafood & local produce · Open daily noon–8:30 PM · 065 708 1548</div>
+      <div class="walk">🚶 ~5 min walk from hotel</div>
+      <div class="note">Day 3 post-hike lunch · Book ahead for dinner</div>
+      <a class="map-link" href="https://maps.google.com/?q=Vaughan's+on+the+Prom+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🍔</div>
+    <div class="place-info">
+      <div class="name">Danny Mac's</div>
+      <div class="meta">Main St · Casual Irish · Burgers, sandwiches · 4.3★ (716 reviews)</div>
+      <div class="walk">🚶 ~4 min walk</div>
+      <a class="map-link" href="https://maps.google.com/?q=Danny+Mac's+Lahinch+Clare" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🥗</div>
+    <div class="place-info">
+      <div class="name">The Corner Stone</div>
+      <div class="meta">Main St · Gastropub · 4.2★ (705 reviews) · Lunch & dinner</div>
+      <div class="walk">🚶 ~3 min walk</div>
+      <a class="map-link" href="https://maps.google.com/?q=The+Corner+Stone+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">☕</div>
+    <div class="place-info">
+      <div class="name">Hugo's Bakery & Deli</div>
+      <div class="meta">Main St · Coffee, baked goods, light bites · Great for morning before hike</div>
+      <div class="walk">🚶 ~3 min walk</div>
+      <a class="map-link" href="https://maps.google.com/?q=Hugo's+Bakery+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">☕</div>
+    <div class="place-info">
+      <div class="name">Joe's Café</div>
+      <div class="meta">Main St · Gluten-free soups/stews · Homemade pizza dough daily</div>
+      <div class="walk">🚶 ~3 min walk</div>
+      <a class="map-link" href="https://maps.google.com/?q=Joe's+Cafe+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="section-label">🌙 Dinner Options</div>
+
+  <div class="place-card">
+    <div class="pin">🍹</div>
+    <div class="place-info">
+      <div class="name">The Edge Lahinch</div>
+      <div class="meta">Brunch, lunch & dinner · Cocktails · Modern coastal · Stylish interior</div>
+      <div class="walk">🚶 ~5 min walk</div>
+      <a class="map-link" href="https://maps.google.com/?q=The+Edge+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🦞</div>
+    <div class="place-info">
+      <div class="name">Barrtra Seafood Restaurant</div>
+      <div class="meta">Wild Atlantic Way · 4.6★ · Dinner only: Wed–Sat 5:30–9 PM · Sun noon–7 PM · 065 708 1280</div>
+      <div class="walk">🚗 ~5 min drive (not walkable)</div>
+      <div class="note">⚠️ Closed Tuesdays — not for Day 3 lunch</div>
+      <a class="map-link" href="https://maps.google.com/?q=Barrtra+Seafood+Restaurant+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="section-label">🍺 Pubs</div>
+
+  <div class="place-card">
+    <div class="pin">🍺</div>
+    <div class="place-info">
+      <div class="name">Kenny's Bar</div>
+      <div class="meta">Main St · Local favourite · Lively atmosphere · Good pints</div>
+      <div class="walk">🚶 ~3 min walk</div>
+      <a class="map-link" href="https://maps.google.com/?q=Kenny's+Bar+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🍺</div>
+    <div class="place-info">
+      <div class="name">O'Looney's Bar</div>
+      <div class="meta">The Promenade · Beachfront · Casual · Great for a pint with a view</div>
+      <div class="walk">🚶 ~5 min walk</div>
+      <a class="map-link" href="https://maps.google.com/?q=O'Looney's+Bar+Lahinch" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+  <div class="place-card">
+    <div class="pin">🍺</div>
+    <div class="place-info">
+      <div class="name">Aberdeen Bar (on-site)</div>
+      <div class="meta">Lahinch Coast Hotel · Gastro-style bar menu · Breakfast & dinner</div>
+      <div class="walk">🏨 In your hotel</div>
+      <a class="map-link" href="https://maps.google.com/?q=Lahinch+Coast+Hotel" target="_blank">📍 Map</a>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
